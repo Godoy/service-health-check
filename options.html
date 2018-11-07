@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <style>
+    body {
+      margin: 20px;
+    }
+    label {
+      font-weight: bold;
+    }
+
+    input, button {
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    input.big {
+      width: 80%;
+    }
+
+    button {
+      cursor: pointer;
+      float: right;
+    }
+  </style>
+  </head>
+  <body>
+    <div id="buttonDiv">
+    </div>
+
+    <div>
+      <label for="url">URL</label><br>
+      <input placeholder="URL" class="big" type="url" id="url" name="url">
+    </div>
+
+    <div>
+      <label for="refreshInterval">Refresh Interval (sec.)</label><br>
+      <input placeholder="Time to refresh" value="30" type="number" id="refreshInterval" name="refreshInterval">
+    </div>
+
+    <p><label for="headerKey">Headers</label></p>
+    <div>
+      <input type="text" name="headerKey">
+      <input type="text" name="headerValue">
+    </div>
+  <!-- <div>
+    <input type="text" name="headerKey">
+    <input type="text" name="headerValue">
+  </div> -->
+
+
+
+  <button id="save">Save settings</button>
+  </body>
+  <script src="options.js"></script>
+</html>
