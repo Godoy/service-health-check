@@ -1,19 +1,4 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 'use strict';
-
-// chrome.runtime.onStartup.addListener(function() {
-//   chrome.app.window.create('options.html', {
-//     singleton: true,
-//     id: "ChromeApps-Sample-Document-Scan",
-//     bounds: {
-//      'width': 480,
-//      'height': 640
-//     }
-//   });
-// });
 
 chrome.browserAction.onClicked.addListener(function(tab){
   chrome.tabs.create({
@@ -21,9 +6,36 @@ chrome.browserAction.onClicked.addListener(function(tab){
   });
 });
 
-chrome.runtime.onInstalled.addListener(function() {
-  chrome.storage.sync.set({color: '#3aa757'}, function() {
-    console.log("The color is green.");
-  });
+chrome.storage.sync.set({
+  isRunning: false,
+  url: "http://localhost",
+  refreshInterval: 300
+})
+
+chrome.contextMenus.create({
+  id: "changeStatus",
+  title: "Stop",
+  contexts: ["browser_action"]
 });
 
+chrome.contextMenus.onClicked.addListener(function(info, tab) {
+  if (info.menuItemId == "changeStatus") {
+    chrome.storage.sync.get(function(data) {
+      if(data.isRunning) {
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, { action: "stop" }, function(response) {
+            chrome.contextMenus.update("changeStatus", { title: "Start" })
+            chrome.browserAction.disable()
+          });
+        });
+      } else {
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, { action: "start" }, function(response) {
+            chrome.contextMenus.update("changeStatus", { title: "Stop" })
+            chrome.browserAction.enable()
+          });
+        });
+      }
+    })
+  }
+});

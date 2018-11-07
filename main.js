@@ -4,6 +4,7 @@
 
 'use strict';
 
+let runningInterval;
 
 function printResult(result) {
   $("#result").html("")
@@ -30,48 +31,84 @@ function printResult(result) {
   }
 }
 
-chrome.storage.sync.get(function(data) {
-  console.log(data)
+function start() {
+  chrome.storage.sync.get(function(data) {
+    console.log(data)
 
-  const url = data.url
-  const headers = data.headers
-  const refreshTime = data.refreshTime
+    const url = data.url
+    const headers = data.headers
+    const refreshInterval = data.refreshInterval
 
-  const userAction = async () => {
-    let results = { mainStatus: false, dependencies: [] }
+    if (url) {
+      console.log("Running")
 
-    let requestHeaders = {}
-    for(const headerItem of headers) {
-      requestHeaders[headerItem.key] = headerItem.value
-    }
+      chrome.storage.sync.set({
+        isRunning: true
+      })
 
-    const settings = {
-      "async": true,
-      "crossDomain": true,
-      "url": url,
-      "method": "GET",
-      "headers": requestHeaders
-    }
-    $.ajax(settings).done(function (response) {
-      console.log(response);
-      results.mainStatus = true
+      const userAction = async () => {
+        let results = { mainStatus: false, dependencies: [] }
 
-      for(let dependencyKey in response) {
-        results.dependencies.push({
-          'name': dependencyKey,
-          'status': response[dependencyKey]
+        let requestHeaders = {}
+        if(headers)
+        for(const headerItem of headers) {
+          requestHeaders[headerItem.key] = headerItem.value
+        }
+
+        const settings = {
+          "async": true,
+          "crossDomain": true,
+          "url": url,
+          "method": "GET",
+          "headers": requestHeaders
+        }
+        $.ajax(settings).done(function (response) {
+          console.log(response);
+          results.mainStatus = true
+
+          for(let dependencyKey in response) {
+            results.dependencies.push({
+              'name': dependencyKey,
+              'status': response[dependencyKey]
+            })
+          }
         })
+        .fail(function() {
+          results.mainStatus = false
+        })
+        .always(function() {
+          console.log("always", results)
+          printResult(results)
+        });
       }
-    })
-    .fail(function() {
-      results.mainStatus = false
-    })
-    .always(function() {
-      console.log("always", results)
-      printResult(results)
-    });
-  }
 
-  userAction()
-  setInterval(userAction, parseInt(refreshTime)*1000)
-});
+      userAction()
+      runningInterval = setInterval(userAction, parseInt(refreshInterval)*1000)
+    }
+  });
+}
+
+
+function stop() {
+  console.log("Stopped")
+  clearInterval(runningInterval)
+
+  chrome.storage.sync.set({
+    isRunning: false
+  })
+}
+
+
+chrome.runtime.onMessage.addListener(
+  function(request) {
+    if (request.action == "stop") {
+      stop()
+    }
+    else if (request.action == "start") {
+      start()
+    }
+  }
+);
+
+$("#result").html("Loading...")
+start()

@@ -22,12 +22,14 @@
       cursor: pointer;
       float: right;
     }
+
+    #saveStatus {
+      font-weight: bold;
+      float: right;
+    }
   </style>
   </head>
   <body>
-    <div id="buttonDiv">
-    </div>
-
     <div>
       <label for="url">URL</label><br>
       <input placeholder="URL" class="big" type="url" id="url" name="url">
@@ -43,14 +45,9 @@
       <input type="text" name="headerKey">
       <input type="text" name="headerValue">
     </div>
-  <!-- <div>
-    <input type="text" name="headerKey">
-    <input type="text" name="headerValue">
-  </div> -->
 
-
-
-  <button id="save">Save settings</button>
+    <button id="save">Save settings</button>
+    <span id="saveStatus"></span>
   </body>
   <script src="options.js"></script>
 </html>

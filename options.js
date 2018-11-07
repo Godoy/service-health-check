@@ -1,7 +1,3 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 'use strict';
 
 let saveButton = document.getElementById('save');
@@ -22,7 +18,7 @@ chrome.storage.sync.get(function(data) {
 
 saveButton.addEventListener('click', function() {
   let url = document.getElementById('url')
-  let refreshTime = document.getElementById('refreshTime')
+  let refreshInterval = document.getElementById('refreshInterval')
   let headerKeys = document.getElementsByName('headerKey')
   let headerValues = document.getElementsByName('headerValue')
 
@@ -36,29 +32,11 @@ saveButton.addEventListener('click', function() {
     console.log(headerValue)
   }
 
-
   chrome.storage.sync.set({
     url: url.value,
-    refreshTime: refreshTime.value,
+    refreshInterval: refreshInterval.value,
     headers: headers
   }, function() {
-    alert('Saved!');
+    document.getElementById('saveStatus').innerHTML = 'Saved!';
   })
 });
-
-// let page = document.getElementById('buttonDiv');
-// const kButtonColors = ['#3aa757', '#e8453c', '#f9bb2d', '#4688f1'];
-
-// function constructOptions(kButtonColors) {
-//   for (let item of kButtonColors) {
-//     let button = document.createElement('button');
-//     button.style.backgroundColor = item;
-//     button.addEventListener('click', function() {
-//       chrome.storage.sync.set({color: item}, function() {
-//         console.log('color is ' + item);
-//       })
-//     });
-//     page.appendChild(button);
-//   }
-// }
-// constructOptions(kButtonColors);
