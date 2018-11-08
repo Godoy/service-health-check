@@ -1,6 +1,6 @@
 {
   "name": "Service Health Check",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Run Health check request against a URL",
   "permissions": [
     "activeTab",
@@ -8,9 +8,7 @@
     "storage",
     "contextMenus",
     "tabs",
-    "notifications",
-    "http://*/",
-    "https://*/"
+    "notifications"
   ],
   "options_ui": {
     "page": "options.html",
