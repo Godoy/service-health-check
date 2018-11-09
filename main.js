@@ -42,10 +42,6 @@ function start() {
     if (url) {
       console.log("Running")
 
-      chrome.storage.sync.set({
-        isRunning: true
-      })
-
       const userAction = async () => {
         let results = { mainStatus: false, dependencies: [] }
 
@@ -92,10 +88,6 @@ function start() {
 function stop() {
   console.log("Stopped")
   clearInterval(runningInterval)
-
-  chrome.storage.sync.set({
-    isRunning: false
-  })
 }
 
 
@@ -110,5 +102,11 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
-$("#result").html("Loading...")
-start()
+chrome.storage.sync.get(function(data) {
+  $("#result").html("Loading...")
+  if(data.isRunning) {
+    start()
+  } else {
+    $("#result").html("<h3>Please configure and start by right-clicking the addon icon.</h3>")
+  }
+})

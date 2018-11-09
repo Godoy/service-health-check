@@ -1,6 +1,6 @@
 {
   "name": "Service Health Check",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Run Health check request against a URL",
   "permissions": [
     "activeTab",

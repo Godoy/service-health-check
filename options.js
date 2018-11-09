@@ -4,9 +4,8 @@ let saveButton = document.getElementById('save');
 
 
 chrome.storage.sync.get(function(data) {
-  let input = document.getElementById('url')
-  input.value = data.url
-  console.log(data)
+  document.getElementById('url').value = data.url
+  document.getElementById('refreshInterval').value = data.refreshInterval
 
   if(data.headers) {
     for(const [index, header] of data.headers.entries()) {
